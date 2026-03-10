@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container" style="padding:2rem;">
+  <h2>Events Calendar</h2>
+  <div id="calendar"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarEl = document.getElementById('calendar');
+  console.log('calendarEl =', calendarEl);
+  console.log('FullCalendar =', window.FullCalendar);
+
+  if (!calendarEl || !window.FullCalendar) {
+    console.error('Calendar element or FullCalendar not found');
+    return;
+  }
+
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    height: 'auto',
+    events: '/api/events'
+  });
+
+  calendar.render();
+});
+</script>
+{% endblock %}

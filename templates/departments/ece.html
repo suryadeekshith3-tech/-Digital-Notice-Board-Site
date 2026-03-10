@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h2>Electronics and communication Engineering (ECE)</h2>
+  <p>Welcome to the ECE department!</p>
+  <!-- Add more department-specific details here -->
+
+  <h2>Notices for ECE</h2>
+  {% if notices %}
+    
+  <div class="row">
+    {% for notice in notices %}
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            {{ notice.title }}
+            {% if notice.pinned %}
+              <span class="badge bg-warning text-dark">Pinned</span>
+            {% endif %}
+          </div>
+          <div class="card-body">
+  {% if notice.media_type == 'image' and notice.media_url %}
+    <img src="{{ notice.media_url }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: contain;" alt="{{ notice.title }}">
+  {% endif %}
+  <p>{{ notice.content }}</p>
+  <small class="text-muted">Created: {{ notice.created_str }}</small>
+</div>
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+    <p>No notices available for ECE.</p>
+  {% endif %}
+{% endblock %}

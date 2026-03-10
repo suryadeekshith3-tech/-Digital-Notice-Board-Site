@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fafafa;
+            margin: 0;
+            padding: 0;
+        }
+        .about-container {
+            max-width: 1100px;
+            margin: 46px auto 0 auto;
+            background: #fff;
+            padding: 36px 36px 20px 36px;
+            border-radius: 10px;
+            box-shadow: 0 2px 18px rgba(0,0,0,0.08);
+        }
+        .about-img{
+            width: 1100px;
+            height: auto;
+        }
+        .about-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        .about-text {
+            color: #555;
+            font-size: 1.12rem;
+            line-height: 1.7;
+            margin-bottom: 13px;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="about-container">
+        <img src="{{ url_for('static', filename='uploads/new geck.jpg') }}" alt="Campus Photo" class="about-img">
+
+        
+        <div class="about-title">About GECK</div>
+        <div class="about-text">
+            Government Engineering College Kushalnagar (GECK) was established int the year 2007 by Government of Karnataka along with other 10 public engineering college's. Affiliated to Visvesvaraya Technological University (VTU) and approved by All India Council for Technical Education(AICTE), the college provides four engineering courses - Computer Science Engineering, Mechanical Engineering, Civil Engineering and Electronics and Communication Engineering with a Intake of 60 students for each branch as per the VTU guidelines.
+        </div>
+        <div class="about-text">
+            Situated at Gateway of Kodagu(Coorg) ina greenery filled scenic expance of 10 acres, GECK is in the neighbourhood of SH 88 and at an arm's distance are some of the most important locations like District Headquaters. Proximity to Bus Station connects one easily to any part of the city and helps in commutation to GECK.
+        </div>
+        <div class="about-text">
+            Our college has grown many folds, producing some of the best engineers in the country. Being an institution that functions on only Merit- Based CET seat allotment, the students obtaining admission are the creamy layer of the bright students in the state. The inexpensive fees structure is an aid and a driving reason for students of difficult financial stability and from the rural to join the college. The college crafts an environment for allround development of students encompassing both academic and extra-curricular activities. The students are hardworking, cultured, highly disciplined and have preserved the cherished values of this institution over the years. GECK instills a zealous essence into the students which propels them to explore new realms of engineering and embark to achieve great things. Enhancing this factor is the experience that students gain learning at GECK in a way different from the education system of most conventional engineering colleges.
+        </div>
+    </div>
+</body>
+</html>

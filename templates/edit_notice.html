@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 40px auto;">
+  <h2 style="margin-bottom: 30px;">Edit Notice</h2>
+  
+  <form method="post" enctype="multipart/form-data" style="background: #f9f9f9; padding: 30px; border-radius: 8px;">
+    
+    <div class="mb-3" style="margin-bottom: 20px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: 600;">Title</label>
+      <input class="form-control" name="title" value="{{ notice.title }}" required 
+             style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+    </div>
+
+    <div class="mb-3" style="margin-bottom: 20px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: 600;">Content</label>
+      <textarea class="form-control" name="content" rows="5" required 
+                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">{{ notice.content }}</textarea>
+    </div>
+    
+    <div class="mb-3" style="margin-bottom: 20px;">
+      <label for="department" style="display: block; margin-bottom: 5px; font-weight: 600;">Department</label>
+      <select name="department" id="department" required 
+              style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        <option value="">Select Department</option>
+        <option value="cse" {% if notice.department == 'cse' %}selected{% endif %}>CSE</option>
+        <option value="ece" {% if notice.department == 'ece' %}selected{% endif %}>ECE</option>
+        <option value="mech" {% if notice.department == 'mech' %}selected{% endif %}>Mechanical</option>
+        <option value="civil" {% if notice.department == 'civil' %}selected{% endif %}>Civil</option>
+        <option value="general" {% if notice.department == 'general' or not notice.department %}selected{% endif %}>General</option>
+      </select>
+    </div>
+
+    <div class="form-check mb-3" style="margin-bottom: 20px;">
+      <input class="form-check-input" type="checkbox" name="pinned" value="1" id="pinned" 
+             {% if notice.pinned %}checked{% endif %}
+             style="margin-right: 10px;">
+      <label class="form-check-label" for="pinned" style="font-weight: 600;">Pin this notice</label>
+    </div>
+
+    <div class="mb-3" style="margin-bottom: 20px;">
+      <label style="display: block; margin-bottom: 5px; font-weight: 600;">Attach Media (optional)</label>
+      <input type="file" name="media" accept="audio/*,video/*,image/*" 
+             style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+      <small style="color: #666;">Leave empty to keep existing media</small>
+    </div>
+
+    {% if notice.media_url %}
+      <div class="mb-3" style="margin-bottom: 20px; padding: 15px; background: #f0f0f0; border-radius: 4px;">
+        <p style="font-weight: 600; margin-bottom: 10px;">Current Media:</p>
+        {% if notice.media_type == "audio" %}
+          <audio controls style="width:100%">
+            <source src="{{ notice.media_url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        {% elif notice.media_type == "video" %}
+          <video controls style="max-width:100%; border-radius: 4px;">
+            <source src="{{ notice.media_url }}" type="video/mp4">
+            Your browser does not support the video element.
+          </video>
+        {% elif notice.media_type == "image" %}
+          <img src="{{ notice.media_url }}" alt="Notice Media" style="max-width:100%; border-radius: 4px;">
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary" type="submit" 
+              style="background: #16bba5; color: white; border: none; padding: 12px 30px; border-radius: 4px; cursor: pointer;">Save Changes</button>
+      <a class="btn btn-secondary" href="{{ url_for('dashboard') }}" 
+         style="background: #6c757d; color: white; text-decoration: none; padding: 12px 30px; border-radius: 4px; display: inline-block;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

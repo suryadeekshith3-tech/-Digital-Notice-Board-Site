@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 40px auto;">
+  <h2>📱 WhatsApp Setup</h2>
+  <div style="background: #f9f9f9; padding: 30px; border-radius: 8px;">
+    <p>To receive WhatsApp notifications:</p>
+    <ol style="line-height: 2;">
+      <li>Save this number in your contacts: <strong>{{ whatsapp_number }}</strong></li>
+      <li>Send this message to that number: <strong>{{ join_code }}</strong></li>
+      <li>You'll receive a confirmation reply</li>
+      <li>Then enable WhatsApp notifications in your <a href="{{ url_for('profile') }}">profile settings</a></li>
+    </ol>
+    <a href="{{ url_for('profile') }}" class="btn btn-primary">Go to Profile</a>
+  </div>
+</div>
+{% endblock %}

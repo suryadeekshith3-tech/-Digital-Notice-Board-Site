@@ -1,0 +1,102 @@
+
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 style="margin:24px 24px 16px;">Departments</h2>
+
+<style>
+  .dept-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:18px;
+    padding:0 24px 32px;
+  }
+  .dept-card{
+    background:#ffffff;
+    border-radius:14px;
+    padding:16px 14px;
+    box-shadow:0 6px 14px rgba(15,23,42,0.08);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:#111827;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .dept-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 22px rgba(15,23,42,0.12);
+  }
+  .dept-icon{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#e0f2fe;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:#0369a1;
+  }
+  .dept-text-title{
+    font-size:14px;
+    font-weight:600;
+  }
+  .dept-text-sub{
+    font-size:11px;
+    color:#6b7280;
+  }
+  @media(max-width:768px){
+    .dept-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+</style>
+<div class="dept-grid">
+  <!-- existing department cards ... -->
+
+  <!-- New All Notices card -->
+  <a href="{{ url_for('all_notices') }}" class="dept-card">
+    <div class="dept-icon">📰</div>
+    <div>
+      <div class="dept-text-title">All Notices</div>
+      <div class="dept-text-sub">View every notice from all departments</div>
+    </div>
+  </a>
+</div>
+
+<div class="dept-grid">
+  <a href="{{ url_for('department_page', dept='cse') }}" class="dept-card">
+    <div class="dept-icon">💻</div>
+    <div>
+      <div class="dept-text-title">CSE</div>
+      <div class="dept-text-sub">Computer Science & Engineering</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('department_page', dept='ece') }}" class="dept-card">
+    <div class="dept-icon">📡</div>
+    <div>
+      <div class="dept-text-title">ECE</div>
+      <div class="dept-text-sub">Electronics & Communication</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('department_page', dept='mech') }}" class="dept-card">
+    <div class="dept-icon">⚙️</div>
+    <div>
+      <div class="dept-text-title">Mechanical</div>
+      <div class="dept-text-sub">Mechanical Engineering</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('department_page', dept='civil') }}" class="dept-card">
+    <div class="dept-icon">🏗️</div>
+    <div>
+      <div class="dept-text-title">Civil</div>
+      <div class="dept-text-sub">Civil Engineering</div>
+    </div>
+  </a>
+</div>
+
+
+
+{% endblock %}

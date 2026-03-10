@@ -1,0 +1,14 @@
+<div class="col-md-6 col-lg-4 mb-3">
+  <div class="card h-100 {% if n.pinned %}border-warning{% endif %}">
+    <div class="card-body">
+      <h5 class="card-title">
+        {{ n.title }}
+        {% if n.pinned %}
+          <span class="badge bg-warning text-dark">Pinned</span>
+        {% endif %}
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">By {{ n.author_name or 'Unknown' }} • {{ n.created_str }}</h6>
+      <p class="card-text">{{ n.content }}</p>
+    </div>
+  </div>
+</div>

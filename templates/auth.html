@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Auth</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+
+    body {
+      background: #f5f7fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .auth-wrapper {
+      width: 1000px;
+      min-height: 650px;
+      display: flex;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    /* Left panel */
+    .auth-left {
+      flex: 1;
+      background: #16bba5;
+      color: #ffffff;
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .auth-left h2 {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .auth-left p {
+      opacity: 0.9;
+      margin-bottom: 40px;
+      max-width: 260px;
+      line-height: 1.5;
+    }
+
+    .btn-outline {
+      border: 2px solid #ffffff;
+      background: transparent;
+      color: #ffffff;
+      padding: 12px 40px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Right panel */
+    .auth-right {
+      flex: 1.2;
+      background: #ffffff;
+      padding: 40px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+      max-height: 650px;
+    }
+
+    .auth-right h2 {
+      color: #16bba5;
+      font-size: 28px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-group { 
+      margin-bottom: 0;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 4px;
+      border: 1px solid #e0e0e0;
+      background: #f9fdfd;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #16bba5;
+      box-shadow: 0 0 0 2px rgba(22, 187, 165, 0.1);
+    }
+
+    .form-group select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 15px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-primary {
+      margin-top: 20px;
+      padding: 14px 40px;
+      border-radius: 25px;
+      border: none;
+      background: #16bba5;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      width: 100%;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: #138f7d;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(22, 187, 165, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .required-field::after {
+      content: "*";
+      color: #ff4444;
+      margin-left: 4px;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .divider span {
+      padding: 0 10px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    /* Scrollbar styling */
+    .auth-right::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .auth-right::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .auth-right::-webkit-scrollbar-thumb {
+      background: #16bba5;
+      border-radius: 10px;
+    }
+
+    .auth-right::-webkit-scrollbar-thumb:hover {
+      background: #138f7d;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .auth-wrapper {
+        flex-direction: column;
+        width: 95%;
+        min-height: auto;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-group.full-width {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <!-- Left: Sign in -->
+    <div class="auth-left">
+      <h2>Welcome Back!</h2>
+      <p>To keep connected with us please login with your personal info.</p>
+      <a href="{{ url_for('login') }}" class="btn-outline">Sign In</a>
+      
+      <div style="margin-top: 40px; font-size: 13px; opacity: 0.8;">
+        <p>📋 Join our digital noticeboard community</p>
+        <p>🔔 Get important updates and announcements</p>
+        <p>👥 Connect with department members</p>
+      </div>
+    </div>
+
+    <!-- Right: Create account -->
+    <div class="auth-right">
+      <h2>Create Account</h2>
+      
+      <form method="POST" action="{{ url_for('register') }}">
+        <!-- Personal Information -->
+        <div class="divider">
+          <span>PERSONAL INFORMATION</span>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" name="full_name" placeholder="Full Name" required 
+                   title="Enter your full name as per records">
+          </div>
+          <div class="form-group">
+            <input type="text" name="username" placeholder="Username" required 
+                   title="Choose a unique username">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <input type="email" name="email" placeholder="Email Address" required 
+                 title="Enter your college email address">
+        </div>
+
+        <!-- Academic Information -->
+        <div class="divider">
+          <span>ACADEMIC INFORMATION</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <select name="role" required title="Select your role">
+              <option value="" disabled selected>Select Role *</option>
+              <option value="student">🎓 Student</option>
+              <option value="faculty">👨‍🏫 Faculty</option>
+              <option value="admin">⚙️ Admin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select name="department" required title="Select your department">
+              <option value="" disabled selected>Select Department *</option>
+              <option value="cse">💻 Computer Science (CSE)</option>
+              <option value="ece">📡 Electronics (ECE)</option>
+              <option value="mech">⚙️ Mechanical</option>
+              <option value="civil">🏗️ Civil</option>
+              <option value="other">📚 Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <select name="year" required title="Select your year/position">
+              <option value="" disabled selected>Select Year/Position *</option>
+              <option value="1">1st Year Student</option>
+              <option value="2">2nd Year Student</option>
+              <option value="3">3rd Year Student</option>
+              <option value="4">4th Year Student</option>
+              <option value="faculty">Faculty Member</option>
+              <option value="staff">Staff</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <input type="tel" name="phone_number" placeholder="Phone Number (Optional)" 
+                   pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number"
+                   maxlength="10">
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="divider">
+          <span>SECURITY</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <input type="password" name="password" placeholder="Password" required 
+                   title="Password must be at least 6 characters"
+                   pattern=".{6,}" minlength="6">
+            <span class="field-hint">Minimum 6 characters</span>
+          </div>
+          <div class="form-group">
+            <input type="password" name="password2" placeholder="Confirm Password" required 
+                   title="Please confirm your password">
+          </div>
+        </div>
+
+        <!-- Optional: Bio -->
+        <div class="form-group full-width">
+          <textarea name="bio" placeholder="Short bio (Optional) - Tell us about yourself"></textarea>
+          <span class="field-hint">Brief introduction about yourself (max 200 characters)</span>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div style="margin: 15px 0; font-size: 12px; color: #666; text-align: center;">
+          By registering, you agree to our 
+          <a href="#" style="color: #16bba5; text-decoration: none;">Terms of Service</a> and 
+          <a href="#" style="color: #16bba5; text-decoration: none;">Privacy Policy</a>
+        </div>
+
+        <button type="submit" class="btn-primary">Create Account</button>
+
+        <!-- Login Link for Mobile -->
+        <div style="text-align: center; margin-top: 20px; display: none;" class="mobile-login-link">
+          <span style="color: #666;">Already have an account?</span>
+          <a href="{{ url_for('login') }}" style="color: #16bba5; text-decoration: none; margin-left: 5px;">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Client-side validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const password = document.querySelector('input[name="password"]').value;
+      const confirmPassword = document.querySelector('input[name="password2"]').value;
+      const phone = document.querySelector('input[name="phone_number"]').value;
+      
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+      }
+      
+      if (password.length < 6) {
+        e.preventDefault();
+        alert('Password must be at least 6 characters long!');
+        return false;
+      }
+      
+      if (phone && !/^\d{10}$/.test(phone)) {
+        e.preventDefault();
+        alert('Please enter a valid 10-digit phone number');
+        return false;
+      }
+      
+      return true;
+    });
+
+    // Auto-dismiss flash messages if any
+    setTimeout(() => {
+      const flashes = document.querySelectorAll('.flash-message');
+      flashes.forEach(flash => flash.style.display = 'none');
+    }, 5000);
+  </script>
+</body>
+</html>

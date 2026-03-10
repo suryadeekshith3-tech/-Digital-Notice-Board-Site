@@ -1,0 +1,135 @@
+{% extends "layout.html" %}
+{% block content %}
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>GEC Kushalnagar Notice Board</h1>
+      <p>
+        The official portal for all announcements, events, and updates for
+        students and faculty of GECK.
+      </p>
+    </div>
+  </section>
+
+  {% if ticker_notices %}
+  <div style="background: #ff0055; color: white; padding: 10px 0; overflow: hidden; white-space: nowrap; position: relative; border-bottom: 2px solid #333;">
+    <div style="display: inline-block; padding-left: 100%; animation: ticker 25s linear infinite; font-weight: bold; font-size: 1.1rem;">
+        {% for notice in ticker_notices %}
+            <span style="margin-right: 50px;">🔥 URGENT: {{ notice.title }} — {{ notice.content[:100] }}...</span>
+        {% endfor %}
+    </div>
+  </div>
+  <style>
+    @keyframes ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+  </style>
+  {% endif %}
+
+  <div class="container" style="margin-top: 30px;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; background: #1a1a1a; color: #fff; padding: 20px; border-radius: 12px; border: 1px solid #00d4ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); margin-bottom: 30px;">
+        <div style="flex: 1; min-width: 150px; text-align: center;">
+            <div style="font-size: 0.8rem; color: #00d4ff; text-transform: uppercase; letter-spacing: 1px;">Live Time</div>
+            <div id="live-clock" style="font-size: 1.8rem; font-family: 'Courier New', monospace; color: #ff0055;">00:00:00</div>
+        </div>
+        <div style="flex: 2; min-width: 300px; text-align: center; border-left: 1px solid #333; border-right: 1px solid #333; padding: 0 15px;">
+            <div style="font-size: 0.8rem; color: #00d4ff; text-transform: uppercase; letter-spacing: 1px;">Quote of the Day</div>
+            <div id="quote-text" style="font-style: italic; margin-top: 5px; font-size: 1rem;">"Loading inspiration..."</div>
+        </div>
+        <div style="flex: 1; min-width: 150px; text-align: center;">
+            <div style="font-size: 0.8rem; color: #00d4ff; text-transform: uppercase; letter-spacing: 1px;">Location</div>
+            <div id="weather-info" style="font-size: 1.2rem; margin-top: 5px;">Kushalnagar: 28°C</div>
+        </div>
+    </div>
+  </div>
+
+  <section style="padding:40px 60px; background:#fff;text-align: center;">
+    <h2 style="font-size:26px; font-weight:600; margin-bottom:28px;">Announcements</h2>
+
+    {% if announcements %}
+      <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:32px;">
+        {% for notice in announcements %}
+          <div style="border-left:1px solid #e5e7eb; padding-left:28px; text-align: left;">
+            <div style="color:#f59e0b; font-size:20px; margin-bottom:6px;">→</div>
+            <div style="font-size:15px; font-weight:600; margin-bottom:6px;">{{ notice.title }}</div>
+            <div style="font-size:13px; color:#4b5563; line-height:1.5;">{{ notice.content }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>No announcements yet.</p>
+    {% endif %}
+
+    <div style="text-align:center; margin-top:30px;">
+      <a href="{{ url_for('departments') }}" style="border:2px solid #0f4a8a; padding:8px 26px; border-radius:4px; text-decoration:none; color:#0f4a8a; font-weight:500;">More</a>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="heading-container">
+      <h2 class="section-heading">Latest Notices</h2>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="notice-grid">
+      {% if notices %}
+        {% for notice in notices %}
+        <div class="card {% if notice.pinned %}pinned{% endif %}">
+          <div class="card-body">
+            <h3 class="card-title">
+              {{ notice.title }}
+              {% if notice.pinned %}
+                <span class="badge badge-important">Pinned</span>
+              {% endif %}
+            </h3>
+            <p class="card-text">{{ notice.content }}</p>
+            
+            {% if notice.media_url %}
+              <div style="margin-top: 1rem;">
+                {% if notice.media_type == "audio" %}
+                  <audio controls style="width:100%"><source src="{{ notice.media_url }}"></audio>
+                {% elif notice.media_type == "video" %}
+                  <video controls style="max-width:100%; border-radius: 8px;"><source src="{{ notice.media_url }}"></video>
+                {% elif notice.media_type == "image" %}
+                  <img src="{{ url_for('static', filename=notice.media_url.split('/static/')[-1]) }}" alt="notice media" style="max-width:100%; border-radius: 8px;">
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="card-footer">
+            <small>By {{ notice.author_name }} • {{ notice.created_str }}</small>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>There are no notices yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('live-clock').textContent = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const quotes = [
+        "The best way to predict the future is to create it.",
+        "First, solve the problem. Then, write the code.",
+        "Knowledge is power. Information is liberating.",
+        "Education is the most powerful weapon which you can use to change the world."
+    ];
+    document.getElementById('quote-text').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+  </script>
+
+{% endblock %}

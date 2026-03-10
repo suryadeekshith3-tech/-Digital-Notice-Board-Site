@@ -1,0 +1,451 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+  .profile-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .profile-header {
+    background: linear-gradient(135deg, #16bba5, #0f8b7a);
+    color: white;
+    padding: 40px;
+    position: relative;
+  }
+  
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #16bba5;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .profile-name {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .profile-username {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 15px;
+  }
+  
+  .profile-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+  
+  .profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 30px 40px;
+    background: #f8f9fa;
+  }
+  
+  .stat-item {
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #16bba5;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .profile-content {
+    padding: 40px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #16bba5;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .info-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+  }
+  
+  .info-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  
+  .info-value {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .pref-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .pref-toggle label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+  }
+  
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .toggle-slider {
+    background-color: #16bba5;
+  }
+  
+  input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+  }
+  
+  .edit-profile-btn {
+    background: #16bba5;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+  
+  .edit-profile-btn:hover {
+    background: #138f7d;
+  }
+  
+  .upload-avatar {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    background: rgba(255,255,255,0.2);
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+  }
+  
+  .upload-avatar:hover {
+    background: rgba(255,255,255,0.3);
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #16bba5;
+  }
+</style>
+
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div style="display: flex; align-items: center; gap: 30px;">
+      <div class="profile-avatar">
+        {% if user.profile_picture %}
+          <img src="{{ user.profile_picture }}" alt="Profile">
+        {% else %}
+          {{ (user.full_name or user.username or 'U')[:1]|upper }}
+        {% endif %}
+      </div>
+      <div>
+        <div class="profile-name">{{ user.full_name or user.username or 'User' }}</div>
+        <div class="profile-username">@{{ user.username }}</div>
+        <div>
+          <span class="profile-badge">{{ user.role|upper }}</span>
+          <span class="profile-badge">{{ user.department|upper if user.department else 'GENERAL' }}</span>
+          <span class="profile-badge">Year {{ user.year if user.year else 'N/A' }}</span>
+        </div>
+      </div>
+    </div>
+    
+    {% if session.user_id == user.id %}
+    <div class="upload-avatar" onclick="document.getElementById('avatar-input').click()">
+      📸 Change Photo
+    </div>
+    <form id="avatar-form" action="{{ url_for('upload_avatar') }}" method="POST" enctype="multipart/form-data" style="display: none;">
+      <input type="file" id="avatar-input" name="avatar" accept="image/*" onchange="this.form.submit()">
+    </form>
+    {% endif %}
+  </div>
+  
+  <!-- Profile Stats -->
+  <div class="profile-stats">
+    <div class="stat-item">
+      <div class="stat-value">{{ user.total_notices or 0 }}</div>
+      <div class="stat-label">Notices Posted</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">{{ user.bookmarked_notices|length if user.bookmarked_notices else 0 }}</div>
+      <div class="stat-label">Saved Notices</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">{{ user.last_active|time_since if user.last_active else 'Today' }}</div>
+      <div class="stat-label">Last Active</div>
+    </div>
+  </div>
+  
+  <!-- Profile Content -->
+  <div class="profile-content">
+    <!-- Edit Mode Toggle -->
+    {% if session.user_id == user.id %}
+    <div style="text-align: right; margin-bottom: 20px;">
+      <button class="edit-profile-btn" onclick="toggleEdit()" id="edit-btn">✏️ Edit Profile</button>
+    </div>
+    {% endif %}
+    
+    <!-- View Mode -->
+    <div id="view-mode">
+      <div class="section-title">📋 About Me</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Email</div>
+          <div class="info-value">{{ user.email }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Phone</div>
+          <div class="info-value">{{ user.phone_number or 'Not provided' }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Department</div>
+          <div class="info-value">{{ user.department|upper if user.department else 'Not specified' }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Year</div>
+          <div class="info-value">{{ user.year if user.year else 'Not specified' }}</div>
+        </div>
+        <div class="info-item" style="grid-column: span 2;">
+          <div class="info-label">Bio</div>
+          <div class="info-value">{{ user.bio or 'No bio provided' }}</div>
+        </div>
+      </div>
+      
+      <div class="section-title">🔔 Notification Preferences</div>
+      <div style="margin-bottom: 30px;">
+        <div class="pref-toggle">
+          <label>Email Notifications</label>
+          <span>{{ '✅ Enabled' if user.notification_prefs and user.notification_prefs.email else '❌ Disabled' }}</span>
+        </div>
+        <div class="pref-toggle">
+          <label>SMS (All Notices)</label>
+          <span>{{ '✅ Enabled' if user.notification_prefs and user.notification_prefs.all_sms else '❌ Disabled' }}</span>
+        </div>
+        <div class="pref-toggle">
+          <label>SMS (Urgent Only)</label>
+          <span>{{ '✅ Enabled' if user.notification_prefs and user.notification_prefs.sms else '❌ Disabled' }}</span>
+        </div>
+        <div class="pref-toggle">
+          <label>WhatsApp Notifications</label>
+          <span>{{ '✅ Enabled' if user.notification_prefs and user.notification_prefs.whatsapp else '❌ Disabled' }}</span>
+        </div>
+        <div class="pref-toggle">
+          <label>Browser Notifications</label>
+          <span>{{ '✅ Enabled' if user.notification_prefs and user.notification_prefs.browser else '❌ Disabled' }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Edit Mode -->
+    <div id="edit-mode" style="display: none;">
+      <form action="{{ url_for('update_profile') }}" method="POST">
+        <div class="section-title">✏️ Edit Profile</div>
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Full Name</div>
+            <input type="text" name="full_name" value="{{ user.full_name }}" class="form-control" required>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Phone Number</div>
+            <input type="tel" name="phone_number" value="{{ user.phone_number or '' }}" class="form-control" pattern="[0-9]{10}">
+          </div>
+          <div class="info-item">
+            <div class="info-label">Department</div>
+            <select name="department" class="form-control" required>
+              <option value="cse" {% if user.department == 'cse' %}selected{% endif %}>CSE</option>
+              <option value="ece" {% if user.department == 'ece' %}selected{% endif %}>ECE</option>
+              <option value="mech" {% if user.department == 'mech' %}selected{% endif %}>Mechanical</option>
+              <option value="civil" {% if user.department == 'civil' %}selected{% endif %}>Civil</option>
+            </select>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Year</div>
+            <select name="year" class="form-control" required>
+              <option value="1" {% if user.year == '1' %}selected{% endif %}>1st Year</option>
+              <option value="2" {% if user.year == '2' %}selected{% endif %}>2nd Year</option>
+              <option value="3" {% if user.year == '3' %}selected{% endif %}>3rd Year</option>
+              <option value="4" {% if user.year == '4' %}selected{% endif %}>4th Year</option>
+              <option value="faculty" {% if user.year == 'faculty' %}selected{% endif %}>Faculty</option>
+            </select>
+          </div>
+          <div class="info-item" style="grid-column: span 2;">
+            <div class="info-label">Bio</div>
+            <textarea name="bio" class="form-control" rows="3">{{ user.bio or '' }}</textarea>
+          </div>
+        </div>
+        
+        <div class="section-title">🔔 Notification Settings</div>
+        
+        <div class="pref-toggle">
+          <label>Email Notifications</label>
+          <label class="toggle-switch">
+            <input type="checkbox" name="email_pref" {% if user.notification_prefs and user.notification_prefs.email %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        <div class="pref-toggle">
+          <label>SMS (All Notices)</label>
+          <label class="toggle-switch">
+            <input type="checkbox" name="all_sms_pref" {% if user.notification_prefs and user.notification_prefs.all_sms %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        <div class="pref-toggle">
+          <label>SMS (Urgent Only)</label>
+          <label class="toggle-switch">
+            <input type="checkbox" name="sms_pref" {% if user.notification_prefs and user.notification_prefs.sms %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        <div class="pref-toggle">
+          <label>WhatsApp Notifications</label>
+          <label class="toggle-switch">
+            <input type="checkbox" name="whatsapp_pref" {% if user.notification_prefs and user.notification_prefs.whatsapp %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        <div class="pref-toggle">
+          <label>Browser Notifications</label>
+          <label class="toggle-switch">
+            <input type="checkbox" name="browser_pref" {% if user.notification_prefs and user.notification_prefs.browser %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        
+        <div style="margin-top: 30px; display: flex; gap: 15px;">
+          <button type="submit" class="edit-profile-btn">💾 Save Changes</button>
+          <button type="button" class="edit-profile-btn" style="background: #666;" onclick="toggleEdit()">↩️ Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleEdit() {
+  const viewMode = document.getElementById('view-mode');
+  const editMode = document.getElementById('edit-mode');
+  const editBtn = document.getElementById('edit-btn');
+  
+  if (viewMode.style.display !== 'none') {
+    viewMode.style.display = 'none';
+    editMode.style.display = 'block';
+    if (editBtn) editBtn.textContent = '👁️ View Profile';
+  } else {
+    viewMode.style.display = 'block';
+    editMode.style.display = 'none';
+    if (editBtn) editBtn.textContent = '✏️ Edit Profile';
+  }
+}
+
+// Auto-hide flash messages after 5 seconds
+setTimeout(() => {
+  const toasts = document.querySelectorAll('.toast-item');
+  toasts.forEach(toast => toast.style.display = 'none');
+}, 5000);
+</script>
+
+{% endblock %}

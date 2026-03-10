@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container" style="margin-top: 50px; padding: 0 24px 50px;">
+    <h1 style="color: #0f4a8a; border-bottom: 2px solid #eee; padding-bottom: 10px; font-weight: 700;">Admin Control Center</h1>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 40px; margin-top: 30px;">
+        
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+            <h3 style="margin-bottom: 20px; color: #1e293b; display: flex; align-items: center; gap: 10px;">
+                <span>📢</span> Global Notice Management
+            </h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc; text-align: left; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 15px; font-size: 14px; color: #64748b;">Title</th>
+                            <th style="padding: 15px; font-size: 14px; color: #64748b;">Department</th>
+                            <th style="padding: 15px; font-size: 14px; color: #64748b;">Status</th>
+                            <th style="padding: 15px; font-size: 14px; color: #64748b;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for notice in notices %}
+                        <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 15px; font-weight: 500; color: #334155;">{{ notice.title }}</td>
+                            <td style="padding: 15px; color: #64748b;">
+                                <span style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
+                                    {{ notice.department|upper if notice.department else 'GENERAL' }}
+                                </span>
+                            </td>
+                            <td style="padding: 15px;">
+                                {% if notice.pinned %}
+                                    <span style="background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;">📌 Pinned</span>
+                                {% else %}
+                                    <span style="background: #f1f5f9; color: #94a3b8; padding: 4px 10px; border-radius: 999px; font-size: 12px;">Standard</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 15px; display: flex; gap: 8px;">
+                                <form action="{{ url_for('toggle_pin', id=notice.id) }}" method="POST" style="margin:0;">
+                                    <button type="submit" style="background: #0ea5e9; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500;">
+                                        {{ "Unpin" if notice.pinned else "Pin to Ticker" }}
+                                    </button>
+                                </form>
+                                <form action="{{ url_for('delete_notice', id=notice.id) }}" method="POST" style="margin:0;" onsubmit="return confirm('Delete this notice permanently?')">
+                                    <button type="submit" style="background: #ef4444; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 6px; font-size: 12px;">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="background: #0f172a; color: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 10px;">👤 User Directory & Roles</h3>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                {% for user in users %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #1e293b;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">{{ user.username }}</div>
+                        <div style="font-size: 12px; color: #94a3b8;">{{ user.email }}</div>
+                    </div>
+                    <span style="background: #334155; color: #38bdf8; padding: 4px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 0.5px;">
+                        {{ user.role|upper if user.role else 'STUDENT' }}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

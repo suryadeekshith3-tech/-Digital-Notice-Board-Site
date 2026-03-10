@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GEC Kushalnagar - Notice Board</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .menu-btn {
+      background-color: #3498DB;
+      color: white;
+      padding: 14px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+    .menu-content {
+      display: none;
+      position: absolute;
+      background: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .menu-content a {
+      color: #1565c0;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-weight: lighter;
+      font-size: small;
+    }
+    .menu-content a:hover {
+      background-color: #f1f1f1;
+    }
+    .show {
+      display: block;
+    }
+    .submenu-container {
+      position: relative;
+    }
+    .submenu {
+      display: none;
+      position: absolute;
+      left: 100%;
+      top: 0;
+      min-width: 140px;
+      background: #f9f9f9;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .submenu-container:hover .submenu {
+      display: block;
+    }
+    .submenu a {
+      font-size: 14px;
+      padding: 10px 16px;
+      display: block;
+      color: #1565c0;
+      text-decoration: none;
+      font-weight: normal;
+    }
+    .submenu a:hover {
+      background: #eee;
+    }
+    .events-toggle-btn {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      background: #198754;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 9999;
+      font-size: 24px;
+    }
+    .chat-toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0d6efd;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 9999;
+    }
+    .chat-box {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 320px;
+      max-height: 420px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 9999;
+    }
+    .chat-header {
+      background: #0d6efd;
+      color: #fff;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+    .chat-close-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .chat-messages {
+      padding: 10px;
+      background: #f8f9fa;
+      height: 260px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    .chat-input-row {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+    .chat-input-row input {
+      flex: 1;
+      border: none;
+      padding: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .chat-input-row button {
+      border: none;
+      background: #0d6efd;
+      color: #fff;
+      padding: 0 16px;
+      cursor: pointer;
+    }
+    .user-msg, .bot-msg {
+      margin-bottom: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      max-width: 90%;
+      clear: both;
+    }
+    .user-msg {
+      background: #d1e7dd;
+      margin-left: auto;
+    }
+    .bot-msg {
+      background: #e2e3e5;
+      margin-right: auto;
+    }
+    /* Profile avatar in navbar */
+    .nav-profile {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.1);
+    }
+    .nav-profile:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .nav-profile-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #16bba5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top strip -->
+  <div style="background:#ffd57a; padding:8px 24px; display:flex; align-items:center; justify-content:space-between;">
+    <a href="{{ url_for('contact') }}"
+       style="background:#ff7a1a; border:none; color:#fff; padding:8px 20px; border-radius:4px; 
+              font-weight:600; cursor:pointer; text-decoration:none; display:inline-block;">
+      Contact Us
+    </a>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <select style="padding:6px 10px; border-radius:4px; border:1px solid #ccc;">
+        <option>English</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Logo + college name strip -->
+  <header style="background:#ffffff; padding:16px 24px; display:flex; align-items:center; justify-content:space-between;">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <img src="{{ url_for('static', filename='uploads/geckg.jpg') }}" alt="GEC Kushalnagar Logo" style="height:70px;">
+      <div>
+        <div style="font-size:14px;">ರಾಜ್ಯ ಸರ್ಕಾರದ ಇಂಜಿನಿಯರಿಂಗ್ ಕಾಲೇಜು ಕುಶಾಲನಗರ</div>
+        <div style="font-size:14px;">Government Engineering College Kushalnagar</div>
+        <div style="font-size:16px; font-weight:700;">GEC Kushalnagar - Notice Board</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Blue menu bar -->
+  <nav style="background:#0099e5; color:#fff; padding:10px 24px; display:flex; align-items:center; justify-content:space-between;">
+    <!-- Left: Menu -->
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="font-weight:600;">Menu</div>
+      <div class="nav-menu-container" style="position:relative;">
+        <button onclick="document.getElementById('menu').classList.toggle('show')" class="menu-btn" style="background:#0099e5; border:none; color:#fff; font-size:20px;">☰</button>
+        <div id="menu" class="menu-content">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('about') }}">About</a>
+          <a href="{{ url_for('contact') }}">Contact</a>
+          <div class="submenu-container">
+            <a href="{{ url_for('departments') }}">Departments &#x25B6;</a>
+            <div class="submenu">
+              <a href="{{ url_for('department_page', dept='cse') }}">CSE</a>
+              <a href="{{ url_for('department_page', dept='ece') }}">ECE</a>
+              <a href="{{ url_for('department_page', dept='mech') }}">Mechanical</a>
+              <a href="{{ url_for('department_page', dept='civil') }}">Civil</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Auth links (UPDATED with profile) -->
+    <!-- Right: Auth links -->
+<div style="display:flex; align-items:center; gap:16px;">
+  {% if current_user and current_user.id %}
+    <a href="{{ url_for('gallery') }}" style="color:#fff; text-decoration:none;">Photo Gallery</a>
+    <a href="{{ url_for('profile') }}" class="nav-profile">
+      {% if current_user.profile_picture %}
+        <img src="{{ current_user.profile_picture }}" alt="Profile" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+      {% else %}
+        <div class="nav-profile-avatar">
+          {{ (current_user.full_name or current_user.username or 'U')[:1]|upper }}
+        </div>
+      {% endif %}
+      <span>{{ current_user.full_name or current_user.username }}</span>
+    </a>
+    <a href="{{ url_for('dashboard') }}" style="color:#fff; text-decoration:none;">Dashboard</a>
+    <a href="{{ url_for('logout') }}" style="color:#fff; text-decoration:none;">Logout</a>
+  {% else %}
+    <a href="{{ url_for('auth') }}" style="color:#fff; text-decoration:none;">Sign up</a>
+  {% endif %}
+</div>
+  </nav>
+
+  <main>
+    <div id="toast-container"
+         style="position:fixed; top:16px; right:16px; z-index:9999; max-width:360px;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="toast-item"
+                 style="margin-bottom:10px; background:#2563eb; color:#fff;
+                        padding:12px 16px; border-radius:8px; font-size:14px;
+                        font-weight:500; box-shadow:0 8px 20px rgba(15,23,42,0.35);">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Chat button -->
+  <button id="chat-toggle-btn" class="chat-toggle-btn">Chat</button>
+
+  <!-- Chat window -->
+  <div id="chat-box" class="chat-box">
+    <div class="chat-header">
+      <span>Help Bot</span>
+      <button id="chat-close-btn" class="chat-close-btn">&times;</button>
+    </div>
+    <div id="chat-messages" class="chat-messages">
+      <div class="bot-msg">Hi! Ask me about notices, departments, exams, login, gallery, or say "search" with a keyword.</div>
+    </div>
+    <div class="chat-input-row">
+      <input id="chat-input" type="text" placeholder="Type your question..." />
+      <button id="chat-send-btn">Send</button>
+    </div>
+  </div>
+  
+  <!-- Events button -->
+  <button id="events-toggle-btn" class="events-toggle-btn" onclick="window.location.href='{{ url_for('events') }}'">
+    📅
+  </button>
+
+  <footer style="text-align: center; padding: 2rem; margin-top: 2rem; background: #e9ecef; color: var(--secondary-color);">
+    <p>&copy; 2025 Government Engineering College, Kushalnagar-571234</p>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" crossorigin="anonymous"></script>
+  <script>
+    const socket = io();
+
+    function showToast(msg){
+      const box = document.createElement('div');
+      box.className = 'toast-item';
+      box.style.cssText =
+        "margin-bottom:10px; background:#2563eb; color:#fff; padding:12px 16px;" +
+        "border-radius:8px; font-size:14px; font-weight:500;" +
+        "box-shadow:0 8px 20px rgba(15,23,42,0.35);";
+      box.textContent = msg;
+      document.getElementById('toast-container').appendChild(box);
+      setTimeout(()=> box.remove(), 5000);
+    }
+
+    socket.on('new_notice', data => {
+      showToast(`New notice: ${data.title} (${data.department})`);
+    });
+
+    socket.on('update_notice', data => {
+      showToast(`Notice updated: ${data.title}`);
+    });
+    
+    document.addEventListener("DOMContentLoaded", function () {
+      const chatToggleBtn = document.getElementById("chat-toggle-btn");
+      const chatBox = document.getElementById("chat-box");
+      const chatCloseBtn = document.getElementById("chat-close-btn");
+      const chatMessages = document.getElementById("chat-messages");
+      const chatInput = document.getElementById("chat-input");
+      const chatSendBtn = document.getElementById("chat-send-btn");
+
+      function toggleChat(open) {
+        if (open === true) {
+          chatBox.style.display = "flex";
+        } else if (open === false) {
+          chatBox.style.display = "none";
+        } else {
+          chatBox.style.display = (chatBox.style.display === "flex") ? "none" : "flex";
+        }
+      }
+
+      function addMessage(text, fromBot) {
+        const div = document.createElement("div");
+        div.className = fromBot ? "bot-msg" : "user-msg";
+        div.textContent = text;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addMessage(text, false);
+        chatInput.value = "";
+
+        try {
+          const response = await fetch("/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: text})
+          });
+          const data = await response.json();
+          addMessage(data.reply || "Sorry, something went wrong.", true);
+        } catch (err) {
+          addMessage("Error contacting bot. Please try again later.", true);
+          console.error(err);
+        }
+      }
+
+      chatToggleBtn.addEventListener("click", () => toggleChat());
+      chatCloseBtn.addEventListener("click", () => toggleChat(false));
+      chatSendBtn.addEventListener("click", sendMessage);
+      chatInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

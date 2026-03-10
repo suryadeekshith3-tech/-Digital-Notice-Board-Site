@@ -1,0 +1,382 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+  body {
+    background:#e6f2f8;
+  }
+  .board-shell{
+    max-width:1200px;
+    margin:24px auto;
+    background:#f7fbff;
+    border-radius:24px;
+    box-shadow:0 18px 40px rgba(15,23,42,0.18);
+    display:flex;
+    overflow:hidden;
+  }
+  .board-sidebar{
+    width:260px;
+    background:#122437;
+    color:#ecf4ff;
+    padding:20px 18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .sb-user{
+    text-align:left;
+    margin-bottom:22px;
+  }
+  .sb-avatar{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:#1f3a56;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .sb-name{font-size:14px;font-weight:600;}
+  .sb-email{font-size:11px;color:#a7bed8;}
+  .sb-menu h5{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.3px;
+    color:#9fb4cf;
+    margin:14px 0 8px;
+  }
+  .sb-link{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 8px;
+    border-radius:10px;
+    font-size:13px;
+    color:#e5edf8;
+    text-decoration:none;
+    margin-bottom:4px;
+  }
+  .sb-link.active,
+  .sb-link:hover{
+    background:#1f3a56;
+  }
+  .sb-gallery-form input[type="file"] {
+    width:100%; padding:8px; border-radius:6px;
+    border:1px solid #4a6fa5; background:#1f3a56;
+    color:#ecf4ff; margin-bottom:6px; font-size:12px;
+  }
+  .sb-gallery-form button {
+    width:100%; padding:8px; background:#16bba5;
+    border:none; border-radius:6px; color:white;
+    font-size:12px; cursor:pointer;
+  }
+  .sb-event-form input[type="text"],
+  .sb-event-form input[type="date"]{
+    width:100%;
+    padding:6px 8px;
+    border-radius:6px;
+    border:1px solid #4a6fa5;
+    background:#1f3a56;
+    color:#ecf4ff;
+    font-size:11px;
+    margin-bottom:6px;
+  }
+  .sb-event-form button{
+    width:100%;
+    padding:7px;
+    background:#16bba5;
+    border:none;
+    border-radius:6px;
+    color:#fff;
+    font-size:12px;
+    cursor:pointer;
+  }
+  .board-main{
+    flex:1;
+    padding:18px 22px;
+  }
+  .bm-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .bm-title{
+    font-size:18px;
+    font-weight:600;
+    color:#0f172a;
+  }
+  .bm-sub{
+    font-size:12px;
+    color:#6b7280;
+  }
+  .bm-add-card{
+    background:#ffffff;
+    border-radius:18px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#6b7280;
+    border:1px dashed #cbd5f5;
+    min-height:140px;
+    cursor:pointer;
+  }
+  .bm-add-card:hover{
+    background:#f3f7ff;
+  }
+  .bm-add-plus{
+    font-size:30px;
+    margin-right:8px;
+    color:#16bba5;
+  }
+  .board-columns{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px;
+  }
+  @media(max-width:992px){
+    .board-shell{flex-direction:column;}
+    .board-sidebar{width:100%;flex-direction:row;align-items:flex-start;}
+    .board-main{padding:16px;}
+    .board-columns{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  @media(max-width:640px){
+    .board-columns{grid-template-columns:1fr;}
+  }
+  .notice-card{
+    background:#ffffff;
+    border-radius:18px;
+    padding:14px 14px 10px;
+    box-shadow:0 4px 12px rgba(15,23,42,0.06);
+    display:flex;
+    flex-direction:column;
+    height:100%;
+  }
+  .nc-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:8px;
+  }
+  .nc-badge{
+    padding:2px 8px;
+    border-radius:999px;
+    font-size:10px;
+    background:#e1f5ff;
+    color:#0369a1;
+  }
+  .nc-time{
+    font-size:10px;
+    color:#9ca3af;
+  }
+  .nc-title{
+    font-size:14px;
+    font-weight:600;
+    color:#0f172a;
+    margin-bottom:4px;
+  }
+  .nc-text{
+    font-size:12px;
+    color:#4b5563;
+    flex:1;
+  }
+  .nc-footer{
+    margin-top:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:11px;
+    color:#6b7280;
+  }
+  .nc-btn{
+    border:none;
+    border-radius:999px;
+    padding:3px 10px;
+    font-size:11px;
+    cursor:pointer;
+    background:#16bba5;
+    color:#fff;
+  }
+  .nc-btn-outline{
+    border:1px solid #d1d5db;
+    background:#ffffff;
+    color:#374151;
+  }
+</style>
+
+<div class="board-shell">
+  <aside class="board-sidebar">
+    <div>
+      <div class="sb-user">
+        <div class="sb-avatar">
+          {{ current_user.username[:2]|upper }}
+        </div>
+        <div class="sb-name">{{ current_user.username }}</div>
+        <div class="sb-email">{{ current_user.email }}</div>
+        <div style="font-size:10px; color:#16bba5; font-weight:bold; margin-top:4px;">{{ current_user.role|upper }}</div>
+      </div>
+
+      <div class="sb-menu">
+        <h5>Overview</h5>
+        <a href="{{ url_for('dashboard') }}"
+           class="sb-link {% if not selected_department %}active{% endif %}">
+          ▣ All notices
+        </a>
+        <a href="{{ url_for('dashboard') }}?selected_department=cse"
+           class="sb-link {% if selected_department=='cse' %}active{% endif %}">
+          ▣ CSE
+        </a>
+        <a href="{{ url_for('dashboard') }}?selected_department=ece"
+           class="sb-link {% if selected_department=='ece' %}active{% endif %}">
+          ▣ ECE
+        </a>
+        <a href="{{ url_for('dashboard') }}?selected_department=mech"
+           class="sb-link {% if selected_department=='mech' %}active{% endif %}">
+          ▣ Mechanical
+        </a>
+        <a href="{{ url_for('dashboard') }}?selected_department=civil"
+           class="sb-link {% if selected_department=='civil' %}active{% endif %}">
+          ▣ Civil
+        </a>
+
+        {# Admin Link #}
+        {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('admin_manage') }}" class="sb-link" style="color:#00d4ff; font-weight:bold;">
+          ⚙️ Admin Panel
+        </a>
+        {% endif %}
+      </div>
+
+      <div class="sb-menu">
+        <h5>Calendar Events</h5>
+        {% if current_user.role in ['admin', 'faculty'] %}
+        <form action="{{ url_for('add_event') }}" method="post" class="sb-event-form">
+          <input type="text" name="title" placeholder="Event title" required>
+          <label style="font-size:10px;color:#9fb4cf;">Start date</label>
+          <input type="date" name="start_date" required>
+          <label style="font-size:10px;color:#9fb4cf;">End date (optional)</label>
+          <input type="date" name="end_date">
+          <button type="submit">➕ Add to calendar</button>
+        </form>
+        {% endif %}
+
+        {% set recent_events = recent_events or [] %}
+        <div style="margin-top:8px; font-size:11px; color:#9fb4cf;">
+          Upcoming events:
+        </div>
+        {% for e in recent_events %}
+          <div style="font-size:11px; color:#ecf4ff; display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
+            <span>{{ e.title }}{% if e.start %} ({{ e.start.strftime('%Y-%m-%d') }}){% endif %}</span>
+            {% if current_user.role == 'admin' %}
+            <form action="{{ url_for('delete_event', id=e.id) }}" method="post" style="margin:0;">
+              <button type="submit" style="background:none;border:none;color:#fca5a5;font-size:11px;cursor:pointer;">✕</button>
+            </form>
+            {% endif %}
+          </div>
+        {% else %}
+          <div style="font-size:11px; color:#64748b; margin-top:2px;">
+            No events yet.
+          </div>
+        {% endfor %}
+
+        <a href="{{ url_for('events') }}" class="sb-link" style="margin-top:6px;">
+          📅 Open Events Calendar
+        </a>
+      </div>
+
+      {% if current_user.role in ['admin', 'faculty'] %}
+      <div class="sb-menu" style="border-top:1px solid #1f3a56; padding-top:16px; margin-top:12px;">
+        <h5>Gallery</h5>
+        <form method="POST" enctype="multipart/form-data" class="sb-gallery-form">
+          <input type="file" name="gallery_file" accept="image/*" required>
+          <button type="submit">📸 Upload Photo</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+
+    <div>
+      <a href="{{ url_for('index') }}" class="sb-link">Public site</a>
+      <a href="{{ url_for('logout') }}" class="sb-link">Logout</a>
+    </div>
+  </aside>
+
+  <section class="board-main">
+    <div class="bm-header">
+      <div>
+        <div class="bm-title">My Noticeboard</div>
+        <div class="bm-sub">
+          {{ notices|length }} notices
+          {% if selected_department %} · {{ selected_department|upper }}{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="board-columns">
+      {# Add New Notice Card (Restricted) #}
+      {% if current_user.role in ['admin', 'faculty'] %}
+      <a href="{{ url_for('create_notice') }}{% if selected_department %}?department={{ selected_department }}{% endif %}"
+          style="text-decoration:none;">
+        <div class="bm-add-card">
+          <span class="bm-add-plus">＋</span>
+          <span>Add new notice</span>
+        </div>
+      </a>
+      {% endif %}
+
+      {% for n in notices %}
+      <div class="notice-card">
+        <div class="nc-header">
+          <div class="nc-badge">
+            {{ n.department|upper if n.department else 'GENERAL' }}
+          </div>
+          <div class="nc-time">{{ n.created_str }}</div>
+        </div>
+        <div class="nc-title">
+          {% if n.pinned %}📌 {% endif %}{{ n.title }}
+        </div>
+        <div class="nc-text">
+          {{ n.content }}
+        </div>
+        <div class="nc-footer">
+          <span>By {{ n.author_name if n.author_name else 'System' }}</span>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            
+            <a href="{{ url_for('download_notice', id=n.id) }}" style="text-decoration: none;">
+              <button class="nc-btn" style="background: #3b82f6; display: flex; align-items: center; gap: 4px;" type="button">
+                <span>📥</span> PDF
+              </button>
+            </a>
+
+            {% if current_user.role == 'admin' or current_user.username == n.author_name %}
+              <a href="{{ url_for('edit_notice', id=n.id) }}">
+                <button class="nc-btn nc-btn-outline" type="button">Edit</button>
+              </a>
+              <form method="post"
+                    action="{{ url_for('delete_notice', id=n.id) }}"
+                    style="display:inline;"
+                    onsubmit="return confirm('Delete this notice?');">
+                <button type="submit" class="nc-btn">Delete</button>
+              </form>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <!-- This shows when there are no notices -->
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 18px;">
+        <p style="font-size:14px;color:#6b7280; margin:0;">
+          No notices yet. {% if current_user.role in ['admin', 'faculty'] %}Click "Add new notice" to create one!{% endif %}
+        </p>
+      </div>
+      {% endfor %}
+      
+    </div> <!-- Close board-columns div -->
+  </section>
+</div>
+
+{% endblock %}

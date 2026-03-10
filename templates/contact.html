@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header-image {
+            width: 100vw;
+            height: 30vh;
+            min-height: 220px;
+            background: url('/static/contact-banner.jpg') center center/cover no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('{{ url_for("static", filename="uploads/new geck.jpg") }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 6px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        .header-text {
+            color: white;
+            font-size: 2.7rem;
+            font-weight: bold;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            letter-spacing: 2px;
+        }
+        .main-content {
+            width: 100vw;
+            min-height: 70vh;
+            background: #fff;
+            padding: 48px 0 40px 0;
+            margin: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .section-title {
+            color: #d32f2f;
+            font-size: 1.45rem;
+            width: 90vw;
+            max-width: 980px;
+            margin-bottom: 32px;
+            border-left: 4px solid #d32f2f;
+            padding-left: 14px;
+            font-weight: 600;        
+            
+
+
+        }
+        .contact-cards {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 34px;
+            justify-content: center;
+            width: 90vw;
+            max-width: 980px;
+        }
+        .card {
+            flex: 1 1 275px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.11);
+            padding: 32px 12px;
+            border-top: 3px solid #d32f2f;
+            text-align: center;
+            min-width: 250px;
+            max-width: 330px;
+        }
+        .card-icon {
+            font-size: 2.4rem;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .card-desc {
+            font-size: 1.05rem;
+            color: #222;
+        }
+        .card-desc a {
+            color: #d32f2f;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .footer-note {
+            margin-top: 22px;
+            font-size: 1rem;
+            width: 90vw;
+            max-width: 980px;
+        }
+        .footer-note b {
+            font-weight: 700;
+        }
+        @media (max-width: 800px) {
+            .contact-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card {
+                margin-bottom: 18px;
+                max-width: 95vw;
+            }
+        }
+    </style>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="header-image">
+        <div class="header-text">CONTACT</div>
+    </div>
+    <div class="main-content">
+        <div class="section-title">Contact Us</div>
+        <div class="contact-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="card-title">Address</div>
+                <div class="card-desc">
+                    Government Engineering College Kushalnagar<br>
+                    Madapatna,Madikeri Main Road,Kushalnagar-571234<br>
+                    Kodagu Dist,Karnataka.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-phone"></i></div>
+
+                <div class="card-title">Phone</div>
+                <div class="card-desc">
+                    Info-Line:08276-298230
+
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-envelope"></i></div>
+
+                <div class="card-title">Email</div>
+                <div class="card-desc">
+                    <a href="mailto:geck4gl@gmail.com" style="color:#d32f2f; font-weight:600;">Gmail:geck4gl@gmail.com</a> of the GECK
+                </div>
+            </div>
+        </div>
+        <div class="footer-note">
+            <b>Please note:</b>
+            The Offices, Departments, Research Centres and other Facilities have their own numbers. 
+        </div>
+    </div>
+</body>
+</html>

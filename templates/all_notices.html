@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 style="margin:24px 24px 12px;">All Notices</h2>
+<p style="margin:0 24px 20px; color:#6b7280; font-size:14px;">
+  Complete list of notices from all departments.
+</p>
+
+<div class="notice-grid" style="padding:0 24px 32px;">
+  {% if notices %}
+    {% for notice in notices %}
+      <div class="card {% if notice.pinned %}pinned{% endif %}">
+        <div class="card-body">
+          <h3 class="card-title">
+            {{ notice.title }}
+            {% if notice.pinned %}
+              <span class="badge badge-important">Pinned</span>
+            {% endif %}
+          </h3>
+          <p class="text-muted small">
+            {{ notice.department|upper if notice.department }} • {{ notice.created_str }}
+          </p>
+          <p class="card-text">{{ notice.content }}</p>
+
+          {% if notice.media_url %}
+            <div style="margin-top:1rem;">
+              {% if notice.media_type == "audio" %}
+                <audio controls style="width:100%">
+                  <source src="{{ notice.media_url }}">
+                </audio>
+              {% elif notice.media_type == "video" %}
+                <video controls style="max-width:100%; border-radius:8px;">
+                  <source src="{{ notice.media_url }}">
+                </video>
+              {% elif notice.media_type == "image" %}
+                <img src="{{ notice.media_url }}" style="max-width:100%; border-radius:8px;">
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No notices available.</p>
+  {% endif %}
+</div>
+
+{% endblock %}
